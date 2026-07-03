@@ -15,7 +15,7 @@
   const WALK_BOB = 5;
   const FRAME_SEQ = [0, 1, 2, 1];
   const FINAL_FLOWER_COUNT = 5;
-  const BGM_FILE = '5 seconds of summer - caramel (türkçe çeviri & lyrics).mp3';
+  const BGM_FILE = '5 seconds of summer.mp3';
   const BGM_START_SEC = 43;
 
   const FLOWERS = [
