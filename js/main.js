@@ -15,6 +15,8 @@
   const WALK_BOB = 5;
   const FRAME_SEQ = [0, 1, 2, 1];
   const FINAL_FLOWER_COUNT = 5;
+  const BGM_FILE = '5 seconds of summer - caramel (türkçe çeviri & lyrics).mp3';
+  const BGM_START_SEC = 43;
 
   const FLOWERS = [
     { x: 320,  y: 488, col: 0, row: 0, scale: 0.11, collected: false, message: 'Merhaba Sevde!\nBugün senin günün 🎂' },
@@ -48,6 +50,8 @@
   let camera = { x: 0 };
   let collectedFlowerCount = 0;
   let celebrationStarted = false;
+  let bgm = null;
+  let bgmStarted = false;
 
   const sprite = new Image();
   sprite.src = assetUrl('assets/character.png');
@@ -57,6 +61,43 @@
   flowersImg.src = assetUrl('assets/flowers.png');
   const partyCircleImg = new Image();
   partyCircleImg.src = assetUrl('assets/party-circle-clean.png?v=3');
+
+  function initBgm() {
+    if (bgm) return bgm;
+    bgm = new Audio(assetUrl(`public/${encodeURIComponent(BGM_FILE)}`));
+    bgm.loop = true;
+    bgm.volume = 0.55;
+    bgm.preload = 'auto';
+    return bgm;
+  }
+
+  function resumeBgmOnInput() {
+    const audio = initBgm();
+    const start = () => {
+      audio.currentTime = BGM_START_SEC;
+      audio.play().catch(() => {});
+    };
+    window.addEventListener('keydown', start, { once: true });
+    canvas.addEventListener('touchstart', start, { once: true, passive: true });
+  }
+
+  function playBgm() {
+    if (bgmStarted) return;
+    bgmStarted = true;
+
+    const audio = initBgm();
+    const start = () => {
+      audio.currentTime = BGM_START_SEC;
+      audio.play().catch(() => resumeBgmOnInput());
+    };
+
+    if (audio.readyState >= 1) {
+      start();
+    } else {
+      audio.addEventListener('loadedmetadata', start, { once: true });
+      audio.load();
+    }
+  }
 
   const player = {
     x: 180,
@@ -402,6 +443,7 @@
   window.startSevdeGame = function startSevdeGame() {
     if (gameStarted) return;
     gameStarted = true;
+    playBgm();
 
     setTimeout(() => hint.classList.add('hidden'), 5000);
 
