@@ -245,8 +245,8 @@
     downloadTriggered = true;
 
     const a = document.createElement('a');
-    a.href = assetUrl('assets/Trojan.SevdeBirthday.txt');
-    a.download = 'Trojan.SevdeBirthday.exe';
+    a.href = assetUrl('assets/inandin-mi.png');
+    a.download = 'INANDIN_MI.png';
     a.rel = 'noopener';
     document.body.appendChild(a);
     a.click();
@@ -255,7 +255,7 @@
     showDownloadProgress(() => {
       spawnPopup({
         title: 'Windows Güvenliği',
-        body: 'Trojan.SevdeBirthday.exe\nindirildi ve karantinaya alındı.\n(Gerçekte doğum günü sürprizi 🎂)',
+        body: 'INANDIN_MI.png indirildi.\nŞaka yaptık sadece 😄\nİyi ki doğdun Sevde! 🎂',
         icon: '🛡️',
       }, 0);
     });
