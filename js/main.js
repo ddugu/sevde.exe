@@ -52,6 +52,91 @@
   let celebrationStarted = false;
   let bgm = null;
   let bgmStarted = false;
+  let bgmUnlocked = false;
+  const bgmTapHint = document.getElementById('bgm-tap-hint');
+  const bgmTapBtn = document.getElementById('bgm-tap-btn');
+
+  function initBgm() {
+    if (bgm) return bgm;
+
+    bgm = document.getElementById('bgm-audio');
+    if (!bgm) {
+      bgm = document.createElement('audio');
+      bgm.id = 'bgm-audio';
+      bgm.setAttribute('playsinline', '');
+      bgm.setAttribute('webkit-playsinline', '');
+      bgm.loop = true;
+      bgm.preload = 'auto';
+      document.body.appendChild(bgm);
+    }
+
+    bgm.src = assetUrl(`public/${BGM_FILE}?v=7`);
+    return bgm;
+  }
+
+  function hideBgmTapHint() {
+    if (bgmTapHint) bgmTapHint.classList.add('hidden');
+  }
+
+  function showBgmTapHint() {
+    if (bgmTapHint) bgmTapHint.classList.remove('hidden');
+  }
+
+  function startBgmPlayback(volume) {
+    const audio = initBgm();
+    const playAt = () => {
+      audio.currentTime = BGM_START_SEC;
+      audio.volume = volume;
+      return audio.play();
+    };
+
+    if (audio.readyState >= 1) {
+      return playAt();
+    }
+
+    return new Promise((resolve, reject) => {
+      audio.addEventListener('canplay', () => {
+        playAt().then(resolve).catch(reject);
+      }, { once: true });
+      audio.load();
+    });
+  }
+
+  window.unlockBgm = function unlockBgm() {
+    if (bgmUnlocked) return;
+    bgmUnlocked = true;
+    startBgmPlayback(0.01).catch(() => {});
+  };
+
+  window.resumeBgm = function resumeBgm() {
+    startBgmPlayback(0.55)
+      .then(() => hideBgmTapHint())
+      .catch(() => showBgmTapHint());
+  };
+
+  function playBgm() {
+    if (bgmStarted) return;
+    bgmStarted = true;
+
+    const audio = initBgm();
+    audio.currentTime = BGM_START_SEC;
+    audio.volume = 0.55;
+
+    if (!audio.paused) {
+      hideBgmTapHint();
+      return;
+    }
+
+    audio.play()
+      .then(() => hideBgmTapHint())
+      .catch(() => showBgmTapHint());
+  }
+
+  if (bgmTapBtn) {
+    bgmTapBtn.addEventListener('click', () => {
+      window.resumeBgm();
+    });
+  }
 
   const sprite = new Image();
   sprite.src = assetUrl('assets/character.png');
@@ -61,54 +146,6 @@
   flowersImg.src = assetUrl('assets/flowers.png');
   const partyCircleImg = new Image();
   partyCircleImg.src = assetUrl('assets/party-circle-clean.png?v=3');
-
-  function initBgm() {
-    if (bgm) return bgm;
-    bgm = new Audio(assetUrl(`public/${BGM_FILE}?v=6`));
-    bgm.loop = true;
-    bgm.volume = 0.55;
-    bgm.preload = 'auto';
-    return bgm;
-  }
-
-  window.unlockBgm = function unlockBgm() {
-    const audio = initBgm();
-    audio.currentTime = BGM_START_SEC;
-    const playAttempt = audio.play();
-    if (playAttempt) {
-      playAttempt.then(() => {
-        audio.pause();
-      }).catch(() => {});
-    }
-  };
-
-  function resumeBgmOnInput() {
-    const audio = initBgm();
-    const start = () => {
-      audio.currentTime = BGM_START_SEC;
-      audio.play().catch(() => {});
-    };
-    window.addEventListener('keydown', start, { once: true });
-    canvas.addEventListener('touchstart', start, { once: true, passive: true });
-  }
-
-  function playBgm() {
-    if (bgmStarted) return;
-    bgmStarted = true;
-
-    const audio = initBgm();
-    const start = () => {
-      audio.currentTime = BGM_START_SEC;
-      audio.play().catch(() => resumeBgmOnInput());
-    };
-
-    if (audio.readyState >= 1) {
-      start();
-    } else {
-      audio.addEventListener('loadedmetadata', start, { once: true });
-      audio.load();
-    }
-  }
 
   const player = {
     x: 180,
@@ -432,6 +469,9 @@
 
   let touchStart = null;
   canvas.addEventListener('touchstart', (e) => {
+    if (bgmTapHint && !bgmTapHint.classList.contains('hidden') && typeof window.resumeBgm === 'function') {
+      window.resumeBgm();
+    }
     touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     e.preventDefault();
   }, { passive: false });

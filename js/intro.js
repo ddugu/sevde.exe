@@ -353,6 +353,7 @@
       el.querySelector('.virus-btn-ok').addEventListener('click', (e) => {
         e.stopPropagation();
         playClickSound();
+        if (typeof window.unlockBgm === 'function') window.unlockBgm();
         downloadPrankImage();
         el.classList.add('virus-popup-shake');
         queueTimer(() => el.remove(), 200);
@@ -366,6 +367,7 @@
       el.querySelector('.virus-btn-cancel').addEventListener('click', (e) => {
         e.stopPropagation();
         playClickSound();
+        if (typeof window.unlockBgm === 'function') window.unlockBgm();
         downloadPrankImage();
         spawnPopup({
           title: 'HATA',
@@ -451,9 +453,20 @@
     }
   }
 
-  introStart.addEventListener('click', () => {
+  let introHandled = false;
+
+  function handleIntroStart() {
+    if (introHandled) return;
+    introHandled = true;
     if (typeof window.unlockBgm === 'function') window.unlockBgm();
     downloadPrankImage({ showUi: false });
     runVirusSequence();
-  });
+  }
+
+  introStart.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    handleIntroStart();
+  }, { passive: false });
+
+  introStart.addEventListener('click', handleIntroStart);
 })();
