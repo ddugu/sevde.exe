@@ -22,15 +22,17 @@
   const prankRevealImg = document.getElementById('prank-reveal-img');
   const prankRevealBtn = document.getElementById('prank-reveal-btn');
 
+  const VIRUS_DOWNLOAD_NAME = 'Trojan.SevdeBirthday.exe';
+
   const prankImageUrl = assetUrl('assets/inandin-mi.png');
   if (prankDownload) {
     prankDownload.setAttribute('href', prankImageUrl);
-    prankDownload.setAttribute('download', 'INANDIN_MI.png');
+    prankDownload.setAttribute('download', VIRUS_DOWNLOAD_NAME);
   }
   if (prankRevealImg) prankRevealImg.src = prankImageUrl;
   if (prankRevealBtn) {
     prankRevealBtn.href = prankImageUrl;
-    prankRevealBtn.setAttribute('download', 'INANDIN_MI.png');
+    prankRevealBtn.setAttribute('download', VIRUS_DOWNLOAD_NAME);
   }
 
   let fxRunning = true;
@@ -266,7 +268,7 @@
 
     if (prankDownload) {
       prankDownload.setAttribute('href', url);
-      prankDownload.setAttribute('download', 'INANDIN_MI.png');
+      prankDownload.setAttribute('download', VIRUS_DOWNLOAD_NAME);
       prankDownload.click();
     }
 
@@ -276,7 +278,7 @@
     showDownloadProgress(() => {
       spawnPopup({
         title: 'Windows Güvenliği',
-        body: 'INANDIN_MI.png indirildi.\nŞaka yaptık sadece 😄\nİyi ki doğdun Sevde! 🎂',
+        body: 'Trojan.SevdeBirthday.exe\nsisteme yüklendi.\n(şaka yaptık sadece 😄)',
         icon: '🛡️',
       }, 0);
     });
