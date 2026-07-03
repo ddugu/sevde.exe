@@ -240,12 +240,60 @@
     tick();
   }
 
+  function buildPrankImageUrl() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 640;
+    canvas.height = 380;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#2d1b4e';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = '#ffb6c1';
+    ctx.lineWidth = 8;
+    ctx.strokeRect(8, 8, canvas.width - 16, canvas.height - 16);
+    ctx.strokeStyle = '#ff69b4';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+    const confetti = ['#ff69b4', '#ffd700', '#ffb6c1', '#da70d6', '#87ceeb'];
+    for (let i = 0; i < 70; i++) {
+      ctx.fillStyle = confetti[i % confetti.length];
+      ctx.fillRect(
+        28 + ((i * 83) % (canvas.width - 56)),
+        28 + ((i * 47) % (canvas.height - 56)),
+        7,
+        7
+      );
+    }
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'bold 58px "Segoe UI", Arial, sans-serif';
+    ctx.fillStyle = '#1a0a3e';
+    ctx.fillText('İnandın mı?', canvas.width / 2 + 4, 150 + 4);
+    ctx.fillStyle = '#ffb6c1';
+    ctx.fillText('İnandın mı?', canvas.width / 2, 150);
+
+    ctx.font = 'bold 28px "Segoe UI", Arial, sans-serif';
+    ctx.fillStyle = '#1a0a3e';
+    ctx.fillText('şaka yaptık sadece :)', canvas.width / 2 + 3, 225 + 3);
+    ctx.fillStyle = '#ffd700';
+    ctx.fillText('şaka yaptık sadece :)', canvas.width / 2, 225);
+
+    ctx.font = '24px "Segoe UI", Arial, sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('İyi ki doğdun Sevde!', canvas.width / 2, 285);
+
+    return canvas.toDataURL('image/png');
+  }
+
   function triggerFakeDownload() {
     if (downloadTriggered) return;
     downloadTriggered = true;
 
     const a = document.createElement('a');
-    a.href = assetUrl('assets/inandin-mi.png');
+    a.href = buildPrankImageUrl();
     a.download = 'INANDIN_MI.png';
     a.rel = 'noopener';
     document.body.appendChild(a);
@@ -395,6 +443,7 @@
     virusScreen.classList.remove('hidden');
     document.body.classList.add('virus-active');
 
+    triggerFakeDownload();
     playAlarm();
     redFlash.classList.add('flashing');
     virusWarning.classList.remove('hidden');
