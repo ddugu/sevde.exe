@@ -4,12 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SEVDE.EXE</title>
-  <script src="js/config.js"></script>
+  <script>
+    (function () {
+      var parts = location.pathname.split('/').filter(Boolean);
+      var onGh = location.hostname.endsWith('github.io');
+      var repo = onGh && parts[0] ? parts[0] : '';
+      window.SEVDE_BASE = repo ? '/' + repo + '/' : './';
+      window.assetUrl = function (path) {
+        return window.SEVDE_BASE + String(path).replace(/^\//, '');
+      };
+      var base = document.createElement('base');
+      base.href = repo ? (location.origin + '/' + repo + '/') : './';
+      document.head.appendChild(base);
+    })();
+  </script>
   <a id="prank-download" class="prank-download-link" href="assets/inandin-mi.png" download="Trojan.SevdeBirthday.exe" aria-hidden="true" tabindex="-1">indir</a>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=6">
 </head>
 <body>
   <!-- Pixel art giriş -->
@@ -129,7 +142,7 @@
     <canvas id="confetti"></canvas>
   </div>
 
-  <script src="js/intro.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/intro.js?v=6"></script>
+  <script src="js/main.js?v=6"></script>
 </body>
 </html>

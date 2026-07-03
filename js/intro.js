@@ -452,6 +452,7 @@
   }
 
   introStart.addEventListener('click', () => {
+    if (typeof window.unlockBgm === 'function') window.unlockBgm();
     downloadPrankImage({ showUi: false });
     runVirusSequence();
   });
