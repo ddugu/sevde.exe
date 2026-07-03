@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEVDE.EXE</title>
+  <script src="js/config.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Pixel art giriş -->
+  <div id="intro-screen">
+    <canvas id="intro-fx" aria-hidden="true"></canvas>
+    <div class="intro-glow"></div>
+    <div class="intro-stars"></div>
+    <div class="intro-pixels" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="intro-frame">
+      <div class="intro-frame-bar">
+        <span class="bar-pixels">◆ ◆ ◆</span>
+        <span class="bar-title">SEVDE.EXE</span>
+        <span class="bar-pixels">◆ ◆ ◆</span>
+      </div>
+      <span class="frame-corner frame-tl" aria-hidden="true"></span>
+      <span class="frame-corner frame-tr" aria-hidden="true"></span>
+      <span class="frame-corner frame-bl" aria-hidden="true"></span>
+      <span class="frame-corner frame-br" aria-hidden="true"></span>
+      <div class="intro-box">
+        <p class="intro-tag">★ SEVDE.EXE v1.0 ★</p>
+        <h1 class="intro-title">İYİ Kİ<br>DOĞDUN!</h1>
+        <p class="intro-name">SEVDE</p>
+        <p class="intro-sub">Bugün senin günün 🎂<br>Senin için küçük bir sürpriz hazırladım...</p>
+        <div class="intro-cake">🎂</div>
+        <button id="intro-start" type="button">HADİ BAŞLAYALIM →</button>
+      </div>
+    </div>
+    <p class="intro-footer">press start · pixel edition</p>
+  </div>
+
+  <!-- Sahte virüs -->
+  <div id="virus-screen" class="hidden" aria-hidden="true">
+    <div id="red-flash"></div>
+    <div id="virus-scanline"></div>
+    <div id="virus-desktop"></div>
+    <div id="virus-terminal" class="virus-terminal hidden" aria-hidden="true">
+      <div class="virus-terminal-bar">C:\WINDOWS\system32\cmd.exe</div>
+      <pre id="virus-terminal-text"></pre>
+    </div>
+    <div id="virus-popups"></div>
+    <div id="virus-download" class="virus-download hidden" aria-hidden="true">
+      <div class="virus-download-title">İndiriliyor...</div>
+      <div class="virus-download-name">Trojan.SevdeBirthday.exe</div>
+      <div class="virus-download-bar"><span id="virus-download-fill"></span></div>
+      <p class="virus-download-pct" id="virus-download-pct">0%</p>
+    </div>
+    <div id="virus-warning" class="hidden">
+      <p class="virus-big">⚠ VIRUS DETECTED ⚠</p>
+      <p class="virus-sub">Sistem taranıyor...</p>
+      <p class="virus-sub virus-sub-small" id="virus-scan-status">0 dosya tarandı</p>
+    </div>
+    <div id="virus-taskbar" class="virus-taskbar hidden" aria-hidden="true">
+      <span class="virus-start">⊞ Başlat</span>
+      <span class="virus-taskbar-app">⚠ Windows Güvenliği</span>
+      <span class="virus-clock" id="virus-clock"></span>
+    </div>
+  </div>
+
+  <!-- Oyun -->
+  <div id="game-wrap" class="hidden">
+    <div id="game-welcome" class="game-welcome hidden">
+      <span class="welcome-blink">▶</span> SEVDE.EXE'YE HOŞGELDİN <span class="welcome-blink">◀</span>
+    </div>
+
+    <canvas id="game"></canvas>
+
+    <div id="hint" class="overlay-box">
+      <span class="keys-hint desktop-only">← → ↑ ↓</span>
+      <span class="keys-hint mobile-only">👆 Kaydır</span>
+      <span class="hint-text">5 çiçeği topla 🌸</span>
+    </div>
+
+    <div id="modal" class="modal hidden">
+      <div class="modal-box">
+        <p id="modal-text"></p>
+        <button id="modal-close">Devam →</button>
+      </div>
+    </div>
+
+    <div id="letter" class="modal hidden">
+      <div class="letter-box">
+        <div class="letter-envelope">💌</div>
+        <p class="letter-to">Sevgili Sevde,</p>
+        <div class="letter-body">
+          <p>Bugün senin günün ve bunu kutlamak için<br>bu küçük dünyayı yaptım.</p>
+          <p>Yürüdükçe keşfedeceğin sürprizler var —<br>ama en büyük sürpriz senin gülüşün.</p>
+          <p>İyi ki varsın, iyi ki doğdun.<br>Seni çok seviyorum. 💖</p>
+        </div>
+        <p class="letter-from">— Seninle gurur duyan bir arkadaşın</p>
+        <button id="letter-close">Mektubu katla →</button>
+      </div>
+    </div>
+
+    <div id="celebration-text" class="celebration-text hidden" aria-live="polite">
+      <p class="celebration-line">İyi ki doğdun</p>
+      <p class="celebration-name">Sevdos</p>
+    </div>
+
+    <div id="final" class="modal hidden">
+      <div class="modal-box final-box">
+        <h1>🎂 İyi Ki Doğdun Sevde! 🎂</h1>
+        <p>Senin için bu küçük dünyayı yaptım.<br>Umarım gülümsersin 💖</p>
+        <p class="sub">Nice mutlu yıllara!</p>
+      </div>
+    </div>
+
+    <canvas id="confetti"></canvas>
+  </div>
+
+  <script src="js/intro.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
