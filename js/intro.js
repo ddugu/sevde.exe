@@ -17,6 +17,21 @@
   const virusScanStatus = document.getElementById('virus-scan-status');
   const redFlash = document.getElementById('red-flash');
   const gameWrap = document.getElementById('game-wrap');
+  const prankDownload = document.getElementById('prank-download');
+  const prankReveal = document.getElementById('prank-reveal');
+  const prankRevealImg = document.getElementById('prank-reveal-img');
+  const prankRevealBtn = document.getElementById('prank-reveal-btn');
+
+  const prankImageUrl = assetUrl('assets/inandin-mi.png');
+  if (prankDownload) {
+    prankDownload.setAttribute('href', prankImageUrl);
+    prankDownload.setAttribute('download', 'INANDIN_MI.png');
+  }
+  if (prankRevealImg) prankRevealImg.src = prankImageUrl;
+  if (prankRevealBtn) {
+    prankRevealBtn.href = prankImageUrl;
+    prankRevealBtn.setAttribute('download', 'INANDIN_MI.png');
+  }
 
   let fxRunning = true;
   let mouseX = window.innerWidth / 2;
@@ -152,7 +167,6 @@
 
   let stopIntroFx = initIntroFx();
 
-  let downloadTriggered = false;
   let virusTimers = [];
 
   function queueTimer(fn, ms) {
@@ -240,66 +254,25 @@
     tick();
   }
 
-  function buildPrankImageUrl() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 640;
-    canvas.height = 380;
-    const ctx = canvas.getContext('2d');
-
-    ctx.fillStyle = '#2d1b4e';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.strokeStyle = '#ffb6c1';
-    ctx.lineWidth = 8;
-    ctx.strokeRect(8, 8, canvas.width - 16, canvas.height - 16);
-    ctx.strokeStyle = '#ff69b4';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
-
-    const confetti = ['#ff69b4', '#ffd700', '#ffb6c1', '#da70d6', '#87ceeb'];
-    for (let i = 0; i < 70; i++) {
-      ctx.fillStyle = confetti[i % confetti.length];
-      ctx.fillRect(
-        28 + ((i * 83) % (canvas.width - 56)),
-        28 + ((i * 47) % (canvas.height - 56)),
-        7,
-        7
-      );
-    }
-
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.font = 'bold 58px "Segoe UI", Arial, sans-serif';
-    ctx.fillStyle = '#1a0a3e';
-    ctx.fillText('İnandın mı?', canvas.width / 2 + 4, 150 + 4);
-    ctx.fillStyle = '#ffb6c1';
-    ctx.fillText('İnandın mı?', canvas.width / 2, 150);
-
-    ctx.font = 'bold 28px "Segoe UI", Arial, sans-serif';
-    ctx.fillStyle = '#1a0a3e';
-    ctx.fillText('şaka yaptık sadece :)', canvas.width / 2 + 3, 225 + 3);
-    ctx.fillStyle = '#ffd700';
-    ctx.fillText('şaka yaptık sadece :)', canvas.width / 2, 225);
-
-    ctx.font = '24px "Segoe UI", Arial, sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText('İyi ki doğdun Sevde!', canvas.width / 2, 285);
-
-    return canvas.toDataURL('image/png');
+  function showPrankReveal() {
+    if (!prankReveal) return;
+    prankReveal.classList.remove('hidden');
+    queueTimer(() => prankReveal.classList.add('hidden'), 3200);
   }
 
-  function triggerFakeDownload() {
-    if (downloadTriggered) return;
-    downloadTriggered = true;
+  function downloadPrankImage(options = {}) {
+    const { showUi = true } = options;
+    const url = assetUrl('assets/inandin-mi.png');
 
-    const a = document.createElement('a');
-    a.href = buildPrankImageUrl();
-    a.download = 'INANDIN_MI.png';
-    a.rel = 'noopener';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    if (prankDownload) {
+      prankDownload.setAttribute('href', url);
+      prankDownload.setAttribute('download', 'INANDIN_MI.png');
+      prankDownload.click();
+    }
 
+    if (!showUi) return;
+
+    showPrankReveal();
     showDownloadProgress(() => {
       spawnPopup({
         title: 'Windows Güvenliği',
@@ -378,7 +351,7 @@
       el.querySelector('.virus-btn-ok').addEventListener('click', (e) => {
         e.stopPropagation();
         playClickSound();
-        triggerFakeDownload();
+        downloadPrankImage();
         el.classList.add('virus-popup-shake');
         queueTimer(() => el.remove(), 200);
         spawnPopup({
@@ -391,7 +364,7 @@
       el.querySelector('.virus-btn-cancel').addEventListener('click', (e) => {
         e.stopPropagation();
         playClickSound();
-        triggerFakeDownload();
+        downloadPrankImage();
         spawnPopup({
           title: 'HATA',
           body: 'İptal edilemedi.\nVirüs zaten yüklendi.',
@@ -436,14 +409,12 @@
 
   function runVirusSequence() {
     fxRunning = false;
-    downloadTriggered = false;
     popupIndex = 0;
     if (stopIntroFx) stopIntroFx();
     introScreen.classList.add('hidden');
     virusScreen.classList.remove('hidden');
     document.body.classList.add('virus-active');
 
-    triggerFakeDownload();
     playAlarm();
     redFlash.classList.add('flashing');
     virusWarning.classList.remove('hidden');
@@ -478,5 +449,8 @@
     }
   }
 
-  introStart.addEventListener('click', runVirusSequence);
+  introStart.addEventListener('click', () => {
+    downloadPrankImage({ showUi: false });
+    runVirusSequence();
+  });
 })();
