@@ -122,6 +122,50 @@ html, body {
   margin-bottom: 20px;
 }
 
+.message-modal {
+  padding: 16px;
+}
+
+.message-modal .modal-box {
+  width: min(92vw, 620px);
+  max-width: 620px;
+  max-height: 82vh;
+  overflow-y: auto;
+  text-align: left;
+  padding: 24px 28px;
+  border-color: #ffd1e4;
+  background:
+    linear-gradient(180deg, rgba(64, 35, 96, 0.97), rgba(45, 27, 78, 0.98));
+}
+
+.message-modal #modal-text {
+  display: block;
+  margin-bottom: 22px;
+}
+
+.message-from {
+  display: block;
+  color: #ffd700;
+  font-size: 12px;
+  margin-bottom: 14px;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 #1a0a3e;
+}
+
+.message-body {
+  display: block;
+  color: #fff8fb;
+  font-size: 10px;
+  line-height: 2.05;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.45);
+}
+
+.message-modal #modal-close {
+  display: block;
+  margin: 0 auto;
+}
+
 #modal-close {
   font-family: 'Press Start 2P', monospace;
   font-size: 8px;
@@ -1099,6 +1143,21 @@ body.virus-active {
     max-width: calc(100vw - 32px);
     padding: 20px 18px;
     font-size: 9px;
+  }
+
+  .message-modal .modal-box {
+    width: calc(100vw - 24px);
+    max-height: 78vh;
+    padding: 20px 18px;
+  }
+
+  .message-from {
+    font-size: 10px;
+  }
+
+  .message-body {
+    font-size: 8px;
+    line-height: 1.9;
   }
 
   .letter-box {

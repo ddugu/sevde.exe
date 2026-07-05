@@ -19,11 +19,31 @@
   const BGM_START_SEC = 43;
 
   const FLOWERS = [
-    { x: 320,  y: 488, col: 0, row: 0, scale: 0.11, collected: false, message: 'Merhaba Sevde!\nBugün senin günün 🎂' },
-    { x: 720,  y: 492, col: 1, row: 0, scale: 0.11, collected: false, message: 'Seninle geçen her an\nçok değerli ✨' },
-    { x: 1120, y: 485, col: 2, row: 0, scale: 0.10, collected: false, letter: true },
-    { x: 1420, y: 490, col: 1, row: 1, scale: 0.11, collected: false, message: 'Bu yol senin için...\nHer adım bir sürpriz 🌸' },
-    { x: 1580, y: 486, col: 2, row: 1, scale: 0.11, collected: false, message: 'Son çiçek!\nArkadaşların seni bekliyor 💕' },
+    {
+      x: 320, y: 488, col: 0, row: 0, scale: 0.11, collected: false,
+      from: 'Dilara',
+      message: 'Bizim random konuşmalardan buralara gelceğimizi hiç tahmin etmemiştim. En son doğum gününe film izleyerek girmiştik, hala dün gibi hissettiriyor. Nasıl bu kadar hızlı geçti zaman anlamadım🥺 Cidden hayatımda senin gibi biri olduğu için çok şanslıyım. Konuşurken çok rahat hissettiğim ve asla çekinmeyeceğim nadir insanlardansın. İyi ki varsın, biz iyi ki tanıştık. Yakınlaşmamız biraz uzun sürse de belki de böyle olması gerekiyormuş; güzel şeyler zaman alır derler. O yüzden hayatımda olduğun için çooook mutluyum Sevdem. İyi ki arkadaşız, iyi ki doğdun. Umarım diğer doğum günlerini de beraber kutlarız. Doğum günün kutlu olsun🎉🎉🎉🥺😭😭🩷😭',
+    },
+    {
+      x: 720, y: 492, col: 1, row: 0, scale: 0.11, collected: false,
+      from: 'İrem',
+      message: 'Sevdee doğum günün kutlu olsun. Umarım sevdiklerinle beraber geçirdiğin mutlu ve güzel yılların olur. İyi ki doğdun, iyi ki varsın. Nice mutlu güzel seneleree❤️',
+    },
+    {
+      x: 1120, y: 485, col: 2, row: 0, scale: 0.10, collected: false,
+      from: 'Sude',
+      message: 'Sevdoşşş öncelikle doğum günün kutlu olsunnnn. Umarım bu yaşın senin en güzel yaşlarından birisi olurr 🥺❤️ Çok ince ruhlu ve çok tatlı bir insansın, umarım hayatın sana hak ettiğin güzellikleri getirir. İyi ki doğmuşsun, iyi ki varsınnnn. Nice mutlu senelereeee seni seviyorummmmm 🎉🥳🎊',
+    },
+    {
+      x: 1420, y: 490, col: 1, row: 1, scale: 0.11, collected: false,
+      from: 'Zera',
+      message: 'Sevdebalımmmm doom günün kutlu olsunnn!!! Çok fazla iletişim kurmasak da tweetlerini çok yakından takip ediyorum!! Ve senle film zevklerimiz olsun, 5sos sevgimiz olsun çok benzediğimizi hissediyorum😭 Yeni yaşında lütfen daha da yakın olalımmm... Ve sen gruba yazsan da yazmasan da seni seviyorum bunu billl. Her zaman yanındayız, ihtiyacın olduğu her an buradayızzzz. Ama inanıyorum ki bu yaşını çok çok başarılı geçirecek ve hayallerini gerçekleştireceksinnn!!! Yeni yaşın çokkk çok kutlu olsun, çok mutlu olll, çok eğlennnn',
+    },
+    {
+      x: 1580, y: 486, col: 2, row: 1, scale: 0.11, collected: false,
+      from: 'Duygu',
+      message: 'Sevdoss iyi ki doğdun, iyi ki varsınn. Yeni yaşında eminim ki içinde büyüyüp duran tüm isteklerini, hayallerini gerçekleştireceksinn. Ne olursa olsun kendini devamlı geliştirmeye devam ettiğin için gurur duyuyorum seninle. Ne olursa olsun yanında olduğumu bilmeni istiyorum. Tek isteğim hiçbir zaman benden çekinmemen. Umarım yeni yaşında da tamamen kendini bana açabildiğin bir yaşın olur. Yeni yaşın sana birçok şans ve mutluluk getireceğine eminim. Yüzündeki o gülümseme hiç eksilmesinnnn',
+    },
   ];
 
   const FLOWER_COLS = 4;
@@ -50,6 +70,7 @@
   let camera = { x: 0 };
   let collectedFlowerCount = 0;
   let celebrationStarted = false;
+  let finalPendingAfterModal = false;
   let bgm = null;
   let bgmStarted = false;
   let bgmUnlocked = false;
@@ -249,37 +270,41 @@
 
         collectedFlowerCount += 1;
         if (collectedFlowerCount >= FINAL_FLOWER_COUNT) {
-          if (flower.message) {
-            showModal(flower.message);
-            setTimeout(showFinal, 2200);
-          } else if (flower.letter) {
-            showLetter();
-            setTimeout(showFinal, 3500);
-          } else {
-            showFinal();
-          }
+          finalPendingAfterModal = true;
+          showModal(flower);
           return;
         }
-        if (flower.letter) {
-          showLetter();
-          startConfetti();
-        } else if (flower.message) {
-          showModal(flower.message);
-          if (flower.confetti) startConfetti();
-        }
+        showModal(flower);
       }
     }
   }
 
-  function showModal(text) {
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function showModal(flower) {
     paused = true;
-    modalText.innerHTML = text.replace(/\n/g, '<br>');
+    const from = flower.from ? `<span class="message-from">${escapeHtml(flower.from)}</span>` : '';
+    const text = escapeHtml(flower.message || '').replace(/\n/g, '<br>');
+    modalText.innerHTML = `${from}<span class="message-body">${text}</span>`;
+    modal.classList.add('message-modal');
     modal.classList.remove('hidden');
   }
 
   function hideModal() {
     modal.classList.add('hidden');
+    modal.classList.remove('message-modal');
     paused = false;
+    if (finalPendingAfterModal) {
+      finalPendingAfterModal = false;
+      setTimeout(showFinal, 300);
+    }
   }
 
   function showLetter() {
